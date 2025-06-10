@@ -1,4 +1,5 @@
 import { View, Text, TouchableOpacity, Alert, StyleSheet } from "react-native";
+import Markdown from "react-native-markdown-display";
 
 export default function NoteItem({
   noteTitle,
@@ -40,13 +41,7 @@ export default function NoteItem({
         <Text style={myStyles.title} numberOfLines={2} ellipsizeMode="tail">
           {noteTitle}
         </Text>
-        <Text
-          style={myStyles.previewText}
-          numberOfLines={3}
-          ellipsizeMode="tail"
-        >
-          {noteText}
-        </Text>
+        <Markdown>{noteText}</Markdown>
       </View>
       <TouchableOpacity style={myStyles.deleteButton} onPress={handleDelete}>
         <View style={myStyles.deleteButtonInner}>
