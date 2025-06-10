@@ -10,6 +10,7 @@ import {
 } from "react-native";
 
 import { useState, useEffect } from "react";
+import Markdown from "react-native-markdown-display";
 
 export default function NoteDetailScreen({
   navigation,
@@ -20,6 +21,7 @@ export default function NoteDetailScreen({
   const existingNoteId = route.params?.noteId;
   const existingNoteTitle = route.params?.noteTitle;
   const existingNoteText = route.params?.noteText;
+  const isViewOnly = route.params?.isViewOnly || false;
 
   const [noteTitle, setNoteTitle] = useState(existingNoteTitle || "");
   const [noteContent, setNoteContent] = useState(existingNoteText || "");
@@ -27,26 +29,32 @@ export default function NoteDetailScreen({
 
   const handleSaveNote = () => {
     if (noteContent.trim().length === 0 && noteTitle.trim().length === 0) {
-      Alert.alert("Warning", "Please enter a header and note");
+      Alert.alert("Uyarı", "Lütfen bir başlık ve not girin");
       return;
     } else if (existingNoteId) {
       onUpdateNote(existingNoteId, noteTitle || "", noteContent);
-      Alert.alert("Update Note", "Your note has been updated");
+      Alert.alert("Not Güncellendi", "Notunuz başarıyla güncellendi!");
       navigation.goBack();
     } else {
       onAddNote(noteTitle || "", noteContent);
-      Alert.alert("Note Added", "Your note has been added");
+      Alert.alert("Not Eklendi", "Notunuz başarıyla eklendi!");
       navigation.goBack();
     }
   };
 
   useEffect(() => {
     navigation.setOptions({
-      title: existingNoteId ? "Notu Düzenle" : "Yeni Not Ekle",
+      title: isViewOnly
+        ? "Notu Görüntüle"
+        : existingNoteId
+        ? "Notu Düzenle"
+        : "Yeni Not Ekle",
     });
-  }, [existingNoteId, navigation]);
+  }, [existingNoteId, isViewOnly, navigation]);
 
   const applyFormatting = (format) => {
+    if (isViewOnly) return;
+
     const { start, end } = selection;
     const currentText = noteContent;
     let formattedText = currentText;
@@ -69,7 +77,6 @@ export default function NoteDetailScreen({
         break;
     }
 
-    // Seçili metin varsa, seçili metnin etrafına biçimlendirme ekle
     if (start !== end) {
       const beforeSelection = currentText.substring(0, start);
       const selectedText = currentText.substring(start, end);
@@ -78,19 +85,16 @@ export default function NoteDetailScreen({
       formattedText =
         beforeSelection + prefix + selectedText + suffix + afterSelection;
       setNoteContent(formattedText);
-      // Biçimlendirme sonrası seçimi ayarla (gerekiyorsa)
       setSelection({
         start: start + prefix.length,
         end: end + prefix.length,
       });
     } else {
-      // Metin seçili değilse, imlecin olduğu yere biçimlendirme işaretlerini ekle
       const beforeCursor = currentText.substring(0, start);
       const afterCursor = currentText.substring(start);
 
       formattedText = beforeCursor + prefix + suffix + afterCursor;
       setNoteContent(formattedText);
-      // İmleci biçimlendirmenin arasına yerleştir
       setSelection({
         start: start + prefix.length,
         end: start + prefix.length,
@@ -104,55 +108,69 @@ export default function NoteDetailScreen({
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
     >
-      <TextInput
-        style={myStyles.inputTitle}
-        value={noteTitle}
-        onChangeText={setNoteTitle}
-        placeholder="Please enter your header"
-        placeholderTextColor="#9E9E9E"
-        maxLength={15}
-      />
+      {isViewOnly ? (
+        <Text style={myStyles.viewTitle}>{noteTitle}</Text>
+      ) : (
+        <TextInput
+          style={myStyles.inputTitle}
+          value={noteTitle}
+          onChangeText={setNoteTitle}
+          placeholder="Lütfen başlığınızı girin"
+          placeholderTextColor="#9E9E9E"
+          maxLength={15}
+          editable={!isViewOnly}
+        />
+      )}
 
-      {/* Biçimlendirme Araç Çubuğu */}
-      <View style={myStyles.toolbar}>
-        <TouchableOpacity
-          style={myStyles.toolbarButton}
-          onPress={() => applyFormatting("bold")}
-        >
-          <Text style={myStyles.toolbarButtonText}>B</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={myStyles.toolbarButton}
-          onPress={() => applyFormatting("italic")}
-        >
-          <Text style={myStyles.toolbarButtonText}>I</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={myStyles.toolbarButton}
-          onPress={() => applyFormatting("strikethrough")}
-        >
-          <Text style={myStyles.toolbarButtonText}>S</Text>
-        </TouchableOpacity>
-        {/* Diğer biçimlendirme düğmelerini buraya ekleyebilirsiniz */}
-      </View>
+      {!isViewOnly && (
+        <View style={myStyles.toolbar}>
+          <TouchableOpacity
+            style={myStyles.toolbarButton}
+            onPress={() => applyFormatting("bold")}
+          >
+            <Text style={myStyles.toolbarButtonText}>B</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={myStyles.toolbarButton}
+            onPress={() => applyFormatting("italic")}
+          >
+            <Text style={myStyles.toolbarButtonText}>I</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={myStyles.toolbarButton}
+            onPress={() => applyFormatting("strikethrough")}
+          >
+            <Text style={myStyles.toolbarButtonText}>S</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
-      <TextInput
-        style={myStyles.inputContent}
-        value={noteContent}
-        onChangeText={setNoteContent}
-        multiline
-        textAlignVertical="top"
-        placeholder="Please enter your note"
-        placeholderTextColor="#9E9E9E"
-        selection={selection}
-        onSelectionChange={({ nativeEvent: { selection } }) =>
-          setSelection(selection)
-        }
-      />
+      {isViewOnly ? (
+        <View style={myStyles.viewContentContainer}>
+          <Markdown style={myStyles.markdownContent}>{noteContent}</Markdown>
+        </View>
+      ) : (
+        <TextInput
+          style={myStyles.inputContent}
+          value={noteContent}
+          onChangeText={setNoteContent}
+          multiline
+          textAlignVertical="top"
+          placeholder="Lütfen notunuzu girin"
+          placeholderTextColor="#9E9E9E"
+          selection={selection}
+          onSelectionChange={({ nativeEvent: { selection } }) =>
+            setSelection(selection)
+          }
+          editable={!isViewOnly}
+        />
+      )}
 
-      <TouchableOpacity style={myStyles.saveButton} onPress={handleSaveNote}>
-        <Text style={myStyles.saveButtonText}>Save</Text>
-      </TouchableOpacity>
+      {!isViewOnly && (
+        <TouchableOpacity style={myStyles.saveButton} onPress={handleSaveNote}>
+          <Text style={myStyles.saveButtonText}>Kaydet</Text>
+        </TouchableOpacity>
+      )}
     </KeyboardAvoidingView>
   );
 }
@@ -163,6 +181,12 @@ const myStyles = StyleSheet.create({
     backgroundColor: "#f5f5f5",
     padding: 20,
   },
+  viewTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 15,
+  },
   inputTitle: {
     backgroundColor: "#FFFFFF",
     borderRadius: 8,
@@ -171,20 +195,6 @@ const myStyles = StyleSheet.create({
     fontWeight: "bold",
     color: "#333",
     marginBottom: 15,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
-  inputContent: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 8,
-    padding: 15,
-    fontSize: 16,
-    color: "black",
-    marginBottom: 20,
-    minHeight: 150,
     elevation: 2,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
@@ -222,6 +232,53 @@ const myStyles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     color: "#555",
+  },
+  viewContentContainer: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 8,
+    padding: 15,
+    marginBottom: 20,
+    minHeight: 150,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  inputContent: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 8,
+    padding: 15,
+    fontSize: 16,
+    color: "black",
+    marginBottom: 20,
+    minHeight: 150,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  markdownContent: {
+    body: {
+      fontSize: 16,
+      color: "#333",
+    },
+    strong: {
+      fontWeight: "bold",
+      color: "#000",
+    },
+    em: {
+      fontStyle: "italic",
+      color: "#111",
+    },
+    s: {
+      textDecorationLine: "line-through",
+      color: "#555",
+    },
+    paragraph: {
+      marginBottom: 8,
+    },
   },
   saveButton: {
     backgroundColor: "#28a745",

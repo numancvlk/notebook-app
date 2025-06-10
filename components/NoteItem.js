@@ -6,7 +6,8 @@ export default function NoteItem({
   noteText,
   noteId,
   onDeleteNote,
-  onPressItem,
+  onViewPress,
+  onEditPress,
   itemWidth,
 }) {
   const displayTitle =
@@ -35,7 +36,7 @@ export default function NoteItem({
   return (
     <TouchableOpacity
       style={[myStyles.card, { width: itemWidth }]}
-      onPress={() => onPressItem(noteId, noteTitle, noteText)}
+      onPress={() => onViewPress(noteId, noteTitle, noteText)}
     >
       <View style={myStyles.contentContainer}>
         <Text style={myStyles.title} numberOfLines={2} ellipsizeMode="tail">
@@ -43,11 +44,19 @@ export default function NoteItem({
         </Text>
         <Markdown>{noteText}</Markdown>
       </View>
-      <TouchableOpacity style={myStyles.deleteButton} onPress={handleDelete}>
-        <View style={myStyles.deleteButtonInner}>
+
+      <View style={myStyles.buttonContainer}>
+        <TouchableOpacity
+          style={myStyles.editButton}
+          onPress={() => onEditPress(noteId, noteTitle, noteText)}
+        >
+          <Text style={myStyles.editButtonText}>Edit</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={myStyles.deleteButton} onPress={handleDelete}>
           <Text style={myStyles.deleteButtonText}>Delete</Text>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
     </TouchableOpacity>
   );
 }
@@ -80,21 +89,43 @@ const myStyles = StyleSheet.create({
     fontSize: 13,
     color: "#666",
   },
-  deleteButton: {
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
     position: "absolute",
     bottom: 10,
-    alignSelf: "center",
+    left: 0,
+    right: 0,
+    paddingHorizontal: 10,
   },
-  deleteButtonInner: {
+  deleteButton: {
     backgroundColor: "#dc3545",
     borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 10,
     alignItems: "center",
     justifyContent: "center",
-    overflow: "hidden",
+    flex: 1,
+    marginLeft: 5,
   },
+
   deleteButtonText: {
+    color: "white",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  editButton: {
+    backgroundColor: "#007bff",
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+    marginRight: 5,
+  },
+  editButtonText: {
     color: "white",
     fontSize: 12,
     fontWeight: "bold",
