@@ -41,10 +41,15 @@ export default function App() {
     }
   };
 
-  const addNote = (noteText) => {
+  const addNote = (noteTitle, noteText) => {
     setNotes((prevNotes) => [
       ...prevNotes,
-      { id: Date.now().toString(), text: noteText },
+      {
+        id: Date.now().toString(),
+        title:
+          (noteTitle || "").trim().length === 0 ? "Başlıksız Not" : noteTitle,
+        text: noteText,
+      },
     ]);
   };
 
@@ -52,10 +57,19 @@ export default function App() {
     setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
   };
 
-  const updateNote = (id, newText) => {
+  const updateNote = (id, newTitle, newText) => {
     setNotes((prevNotes) =>
       prevNotes.map((note) =>
-        note.id === id ? { ...note, text: newText } : note
+        note.id === id
+          ? {
+              ...note,
+              title:
+                (newTitle || "").trim().length === 0
+                  ? "Başlıksız Not"
+                  : newTitle,
+              text: newText,
+            }
+          : note
       )
     );
   };

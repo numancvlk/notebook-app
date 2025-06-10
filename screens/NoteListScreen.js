@@ -15,12 +15,17 @@ export default function NoteListScreen({ navigation, notes, onDeleteNote }) {
     navigation.navigate("NoteDetailScreen");
   };
 
-  const handleNoteItemPress = (id, text) => {
-    navigation.navigate("NoteDetailScreen", { noteId: id, noteText: text });
+  const handleNoteItemPress = (id, title, text) => {
+    navigation.navigate("NoteDetailScreen", {
+      noteId: id,
+      noteTitle: title,
+      noteText: text,
+    });
   };
 
   const renderNoteItem = ({ item }) => (
     <NoteItem
+      noteTitle={item.title}
       noteText={item.text}
       noteId={item.id}
       onDeleteNote={onDeleteNote}

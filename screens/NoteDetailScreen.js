@@ -9,20 +9,22 @@ export default function NoteDetailScreen({
   onUpdateNote,
 }) {
   const existingNoteId = route.params?.noteId;
+  const existingNoteTitle = route.params?.noteTitle;
   const existingNoteText = route.params?.noteText;
 
+  const [noteTitle, setNoteTitle] = useState(existingNoteTitle || "");
   const [noteContent, setNoteContent] = useState(existingNoteText || "");
 
   const handleSaveNote = () => {
-    if (noteContent.trim().length === 0) {
-      Alert.alert("Empty Note", "This note is empty");
+    if (noteContent.trim().length === 0 && noteTitle.trim().length === 0) {
+      Alert.alert("Warning", "Please enter a header and note");
       return;
     } else if (existingNoteId) {
-      onUpdateNote(existingNoteId, noteContent);
+      onUpdateNote(existingNoteId, noteTitle || "", noteContent);
       Alert.alert("Update Note", "Your note has been updated");
       navigation.goBack();
     } else {
-      onAddNote(noteContent);
+      onAddNote(noteTitle || "", noteContent);
       Alert.alert("Note Added", "Your note has been added");
       navigation.goBack();
     }
@@ -36,6 +38,12 @@ export default function NoteDetailScreen({
 
   return (
     <View>
+      <TextInput
+        value={noteTitle}
+        onChangeText={setNoteTitle}
+        placeholder="Please enter your header"
+      />
+
       <TextInput
         value={noteContent}
         onChangeText={setNoteContent}

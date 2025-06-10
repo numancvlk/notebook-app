@@ -1,6 +1,15 @@
 import { View, Text, TouchableOpacity, Alert, StyleSheet } from "react-native";
 
-export default function NoteItem({ noteText, noteId, onDeleteNote }) {
+export default function NoteItem({
+  noteTitle,
+  noteText,
+  noteId,
+  onDeleteNote,
+  onPressItem,
+}) {
+  const displayTitle =
+    (noteTitle || "").trim().length === 0 ? "Başlıksız Not" : noteTitle;
+
   const handleDelete = () => {
     Alert.alert(
       "Delete Note",
@@ -22,47 +31,24 @@ export default function NoteItem({ noteText, noteId, onDeleteNote }) {
   };
 
   return (
-    <View>
-      <Text>{noteText}</Text>
-
-      <TouchableOpacity onPress={handleDelete}>
-        <Text>Delete</Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity onPress={() => onPressItem(noteId, noteTitle, noteText)}>
+      <View>
+        <View>
+          <Text numberOfLines={1} ellipsizeMode="tail">
+            {displayTitle}
+          </Text>
+          <Text>{noteText}</Text>
+        </View>
+        <TouchableOpacity onPress={handleDelete}>
+          <Text>Delete</Text>
+        </TouchableOpacity>
+      </View>
+    </TouchableOpacity>
   );
 }
 
 const myStyles = StyleSheet.create({
-  noteItem: {
-    backgroundColor: "#fff", // Beyaz arka plan
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
-    flexDirection: "row", // Metin ve butonu yan yana hizala
-    justifyContent: "space-between", // Metni sola, butonu sağa it
-    alignItems: "center", // Dikeyde ortala
-    shadowColor: "#000", // iOS gölge
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2, // Android gölge
-  },
-  noteText: {
-    fontSize: 16,
-    flex: 1, // Metnin tüm mevcut alanı kaplamasını sağlar (sil butonu hariç)
-    marginRight: 10, // Metin ile buton arasında boşluk bırak
-  },
-  deleteButton: {
-    backgroundColor: "#dc3545", // Kırmızı arka plan (silme rengi)
-    width: 30,
-    height: 30,
-    borderRadius: 15, // Yuvarlak buton için
-    justifyContent: "center", // İçindeki metni ortala
-    alignItems: "center", // İçindeki metni ortala
-  },
-  deleteButtonText: {
-    color: "#fff", // Beyaz metin
-    fontWeight: "bold",
-    fontSize: 16,
+  container: {
+    flex: 1,
   },
 });
