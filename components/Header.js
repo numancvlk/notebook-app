@@ -10,15 +10,23 @@ export default function Header() {
 
 const myStyles = StyleSheet.create({
   container: {
-    borderWidth: 1,
-    borderColor: "black",
-    margin: 20,
+    backgroundColor: "#007bff",
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    alignItems: "center",
+    justifyContent: "center",
+
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    marginBottom: 10,
   },
   header: {
     fontSize: 25,
     fontWeight: "bold",
-    color: "red",
+    color: "#FFFFFF",
     textAlign: "center",
-    padding: 12,
   },
 });

@@ -4,11 +4,15 @@ import {
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Dimensions,
 } from "react-native";
 
 //---------COMPONENTS-------------
 import NoteItem from "../components/NoteItem";
 import Header from "../components/Header";
+
+const { width } = Dimensions.get("window");
+const itemWidth = (width - 60) / 2;
 
 export default function NoteListScreen({ navigation, notes, onDeleteNote }) {
   const handleAddNotePress = () => {
@@ -30,6 +34,7 @@ export default function NoteListScreen({ navigation, notes, onDeleteNote }) {
       noteId={item.id}
       onDeleteNote={onDeleteNote}
       onPressItem={handleNoteItemPress}
+      itemWidth={itemWidth}
     />
   );
 
@@ -42,6 +47,9 @@ export default function NoteListScreen({ navigation, notes, onDeleteNote }) {
         </View>
       ) : (
         <FlatList
+          numColumns={2}
+          columnWrapperStyle={myStyles.row}
+          contentContainerStyle={myStyles.flatListContent}
           data={notes}
           keyExtractor={(item) => item.id}
           renderItem={renderNoteItem}
@@ -58,9 +66,16 @@ export default function NoteListScreen({ navigation, notes, onDeleteNote }) {
 const myStyles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20, // Yanlardan boşluk
     backgroundColor: "#f5f5f5", // Açık gri arka plan
     paddingTop: 0, // Header bileşeni kendi padding'ini yönetecek
+  },
+  flatListContent: {
+    paddingHorizontal: 15, // FlatList'in yanlardan iç boşluğu (itemWidth hesaplamasına göre ayarlandı)
+    paddingVertical: 10, // Üstten ve alttan boşluk
+  },
+  row: {
+    justifyContent: "space-between", // Not kartlarını yatayda eşit boşluklarla dağıt
+    marginBottom: 10, // Satırlar arası boşluk
   },
   emptyNotesContainer: {
     flex: 1,
