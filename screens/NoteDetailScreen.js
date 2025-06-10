@@ -21,6 +21,9 @@ export default function NoteDetailScreen({
   const existingNoteId = route.params?.noteId;
   const existingNoteTitle = route.params?.noteTitle;
   const existingNoteText = route.params?.noteText;
+  // EKLENEN: Mevcut notun tarih bilgilerini al
+  const existingCreatedAt = route.params?.createdAt;
+  const existingUpdatedAt = route.params?.updatedAt;
   const isViewOnly = route.params?.isViewOnly || false;
 
   const [noteTitle, setNoteTitle] = useState(existingNoteTitle || "");
@@ -31,12 +34,27 @@ export default function NoteDetailScreen({
     if (noteContent.trim().length === 0 && noteTitle.trim().length === 0) {
       Alert.alert("Uyarı", "Lütfen bir başlık ve not girin");
       return;
-    } else if (existingNoteId) {
-      onUpdateNote(existingNoteId, noteTitle || "", noteContent);
+    }
+
+    // EKLENEN: Mevcut tarihleri veya yeni tarihleri belirle
+    const now = new Date().toISOString();
+    const newCreatedAt = existingNoteId ? existingCreatedAt : now; // Yeni notsa şimdi oluşturuldu
+    const newUpdatedAt = now; // Her kayıtta güncellenme tarihi yenilenir
+
+    if (existingNoteId) {
+      // Notu güncellerken, yeni tarihleri de gönder
+      onUpdateNote(
+        existingNoteId,
+        noteTitle || "",
+        noteContent,
+        newCreatedAt,
+        newUpdatedAt
+      );
       Alert.alert("Not Güncellendi", "Notunuz başarıyla güncellendi!");
       navigation.goBack();
     } else {
-      onAddNote(noteTitle || "", noteContent);
+      // Yeni not eklerken, tarihleri de gönder
+      onAddNote(noteTitle || "", noteContent, newCreatedAt, newUpdatedAt);
       Alert.alert("Not Eklendi", "Notunuz başarıyla eklendi!");
       navigation.goBack();
     }
@@ -102,12 +120,26 @@ export default function NoteDetailScreen({
     }
   };
 
+  // EKLENEN: Tarih stringini okunabilir formata dönüştüren yardımcı fonksiyon
+  const formatDateTime = (isoString) => {
+    if (!isoString) return "Bilinmiyor";
+    const date = new Date(isoString);
+    return date.toLocaleDateString("tr-TR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   return (
     <KeyboardAvoidingView
       style={myStyles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
     >
+      {/* Başlık */}
       {isViewOnly ? (
         <Text style={myStyles.viewTitle}>{noteTitle}</Text>
       ) : (
@@ -120,6 +152,19 @@ export default function NoteDetailScreen({
           maxLength={15}
           editable={!isViewOnly}
         />
+      )}
+
+      {isViewOnly && existingCreatedAt && (
+        <View style={myStyles.timestampContainer}>
+          <Text style={myStyles.timestampText}>
+            Created At: {formatDateTime(existingCreatedAt)}
+          </Text>
+          {existingUpdatedAt && existingUpdatedAt !== existingCreatedAt && (
+            <Text style={myStyles.timestampText}>
+              Last Update: {formatDateTime(existingUpdatedAt)}
+            </Text>
+          )}
+        </View>
       )}
 
       {!isViewOnly && (
@@ -185,7 +230,7 @@ const myStyles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "#333",
-    marginBottom: 15,
+    marginBottom: 10,
   },
   inputTitle: {
     backgroundColor: "#FFFFFF",
@@ -200,6 +245,14 @@ const myStyles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+  },
+  timestampContainer: {
+    marginBottom: 15,
+  },
+  timestampText: {
+    fontSize: 12,
+    color: "#777",
+    fontStyle: "italic",
   },
   toolbar: {
     flexDirection: "row",

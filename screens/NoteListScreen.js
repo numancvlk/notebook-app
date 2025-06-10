@@ -31,20 +31,24 @@ export default function NoteListScreen({ navigation, notes, onDeleteNote }) {
     navigation.navigate("NoteDetailScreen");
   };
 
-  const handleNoteItemViewPress = (id, title, text) => {
+  const handleNoteItemViewPress = (id, title, text, createdAt, updatedAt) => {
     navigation.navigate("NoteDetailScreen", {
       noteId: id,
       noteTitle: title,
       noteText: text,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
       isViewOnly: true,
     });
   };
 
-  const handleNoteItemEditPress = (id, title, text) => {
+  const handleNoteItemEditPress = (id, title, text, createdAt, updatedAt) => {
     navigation.navigate("NoteDetailScreen", {
       noteId: id,
       noteTitle: title,
       noteText: text,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
       isViewOnly: false,
     });
   };
@@ -55,9 +59,15 @@ export default function NoteListScreen({ navigation, notes, onDeleteNote }) {
       noteText={item.text}
       noteId={item.id}
       onDeleteNote={onDeleteNote}
-      onViewPress={handleNoteItemViewPress}
-      onEditPress={handleNoteItemEditPress}
+      onViewPress={(id, title, text) =>
+        handleNoteItemViewPress(id, title, text, item.createdAt, item.updatedAt)
+      }
+      onEditPress={(id, title, text) =>
+        handleNoteItemEditPress(id, title, text, item.createdAt, item.updatedAt)
+      }
       itemWidth={itemWidth}
+      createdAt={item.createdAt}
+      updatedAt={item.updatedAt}
     />
   );
 

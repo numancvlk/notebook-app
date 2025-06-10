@@ -26,7 +26,15 @@ export default function App() {
     try {
       const storedNotes = await AsyncStorage.getItem("myNotes");
       if (storedNotes !== null) {
-        setNotes(JSON.parse(storedNotes));
+        // Notları yüklerken, geçmişteki notlarda tarih bilgisi yoksa
+        // onlara varsayılan bir tarih atayabiliriz (örneğin ilk oluşturulma tarihleri).
+        // Bu, eski notların yeni tarih alanları nedeniyle çökmesini önler.
+        const parsedNotes = JSON.parse(storedNotes).map((note) => ({
+          ...note,
+          createdAt: note.createdAt || new Date().toISOString(), // Eğer yoksa şimdiki zamanı ata
+          updatedAt: note.updatedAt || new Date().toISOString(), // Eğer yoksa şimdiki zamanı ata
+        }));
+        setNotes(parsedNotes);
       }
     } catch (error) {
       console.error("Notlar yüklenirken hata oluştu:", error);
@@ -41,7 +49,7 @@ export default function App() {
     }
   };
 
-  const addNote = (noteTitle, noteText) => {
+  const addNote = (noteTitle, noteText, createdAt, updatedAt) => {
     setNotes((prevNotes) => [
       ...prevNotes,
       {
@@ -49,6 +57,8 @@ export default function App() {
         title:
           (noteTitle || "").trim().length === 0 ? "Başlıksız Not" : noteTitle,
         text: noteText,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
       },
     ]);
   };
@@ -57,7 +67,7 @@ export default function App() {
     setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
   };
 
-  const updateNote = (id, newTitle, newText) => {
+  const updateNote = (id, newTitle, newText, newCreatedAt, newUpdatedAt) => {
     setNotes((prevNotes) =>
       prevNotes.map((note) =>
         note.id === id
@@ -68,6 +78,8 @@ export default function App() {
                   ? "Başlıksız Not"
                   : newTitle,
               text: newText,
+              createdAt: newCreatedAt,
+              updatedAt: newUpdatedAt,
             }
           : note
       )

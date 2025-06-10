@@ -9,10 +9,9 @@ export default function NoteItem({
   onViewPress,
   onEditPress,
   itemWidth,
+  createdAt,
+  updatedAt,
 }) {
-  const displayTitle =
-    (noteTitle || "").trim().length === 0 ? "Başlıksız Not" : noteTitle;
-
   const handleDelete = () => {
     Alert.alert(
       "Delete Note",
@@ -33,10 +32,27 @@ export default function NoteItem({
     );
   };
 
+  const formatShortDateTime = (isoString) => {
+    if (!isoString) return "Bilinmiyor";
+    const date = new Date(isoString);
+
+    return (
+      date.toLocaleDateString("tr-TR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+      }) +
+      " " +
+      date.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })
+    );
+  };
+
   return (
     <TouchableOpacity
       style={[myStyles.card, { width: itemWidth }]}
-      onPress={() => onViewPress(noteId, noteTitle, noteText)}
+      onPress={() =>
+        onViewPress(noteId, noteTitle, noteText, createdAt, updatedAt)
+      }
     >
       <View style={myStyles.contentContainer}>
         <Text style={myStyles.title} numberOfLines={2} ellipsizeMode="tail">
@@ -45,10 +61,25 @@ export default function NoteItem({
         <Markdown>{noteText}</Markdown>
       </View>
 
+      <View style={myStyles.timestampsInCard}>
+        {updatedAt && (
+          <Text style={myStyles.timestampTextCard}>
+            Güncellendi: {formatShortDateTime(updatedAt)}
+          </Text>
+        )}
+        {createdAt && createdAt !== updatedAt && (
+          <Text style={myStyles.timestampTextCard}>
+            Oluşturuldu: {formatShortDateTime(createdAt)}
+          </Text>
+        )}
+      </View>
+
       <View style={myStyles.buttonContainer}>
         <TouchableOpacity
           style={myStyles.editButton}
-          onPress={() => onEditPress(noteId, noteTitle, noteText)}
+          onPress={() =>
+            onEditPress(noteId, noteTitle, noteText, createdAt, updatedAt)
+          }
         >
           <Text style={myStyles.editButtonText}>Edit</Text>
         </TouchableOpacity>
@@ -129,5 +160,17 @@ const myStyles = StyleSheet.create({
     color: "white",
     fontSize: 12,
     fontWeight: "bold",
+  },
+  timestampsInCard: {
+    position: "absolute",
+    bottom: 55, // Butonların hemen üstüne gelecek şekilde ayarla
+    left: 15,
+    right: 15,
+    alignItems: "flex-end", // Sağ hizalı
+  },
+  timestampTextCard: {
+    fontSize: 10, // Daha küçük font
+    color: "#999",
+    fontStyle: "italic",
   },
 });
