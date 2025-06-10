@@ -21,7 +21,7 @@ export default function NoteDetailScreen({
   const existingNoteId = route.params?.noteId;
   const existingNoteTitle = route.params?.noteTitle;
   const existingNoteText = route.params?.noteText;
-
+  // EKLENEN: Mevcut notun tarih bilgilerini al
   const existingCreatedAt = route.params?.createdAt;
   const existingUpdatedAt = route.params?.updatedAt;
   const isViewOnly = route.params?.isViewOnly || false;
@@ -32,7 +32,7 @@ export default function NoteDetailScreen({
 
   const handleSaveNote = () => {
     if (noteContent.trim().length === 0 && noteTitle.trim().length === 0) {
-      Alert.alert("Warning", "Please enter a title and a note");
+      Alert.alert("Uyarı", "Lütfen bir başlık ve not girin");
       return;
     }
 
@@ -42,6 +42,7 @@ export default function NoteDetailScreen({
     const newUpdatedAt = now; // Her kayıtta güncellenme tarihi yenilenir
 
     if (existingNoteId) {
+      // Notu güncellerken, yeni tarihleri de gönder
       onUpdateNote(
         existingNoteId,
         noteTitle || "",
@@ -49,12 +50,12 @@ export default function NoteDetailScreen({
         newCreatedAt,
         newUpdatedAt
       );
-      Alert.alert("Note Updated", "Your note has been successfully updated!");
+      Alert.alert("Not Güncellendi", "Notunuz başarıyla güncellendi!");
       navigation.goBack();
     } else {
       // Yeni not eklerken, tarihleri de gönder
       onAddNote(noteTitle || "", noteContent, newCreatedAt, newUpdatedAt);
-      Alert.alert("Note Added", "Your note has been successfully added!");
+      Alert.alert("Not Eklendi", "Notunuz başarıyla eklendi!");
       navigation.goBack();
     }
   };
@@ -62,10 +63,10 @@ export default function NoteDetailScreen({
   useEffect(() => {
     navigation.setOptions({
       title: isViewOnly
-        ? "View Note"
+        ? "Notu Görüntüle"
         : existingNoteId
-        ? "Edit Note"
-        : "Add New Note",
+        ? "Notu Düzenle"
+        : "Yeni Not Ekle",
     });
   }, [existingNoteId, isViewOnly, navigation]);
 
@@ -138,6 +139,7 @@ export default function NoteDetailScreen({
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
     >
+      {/* Başlık */}
       {isViewOnly ? (
         <Text style={myStyles.viewTitle}>{noteTitle}</Text>
       ) : (
@@ -145,7 +147,7 @@ export default function NoteDetailScreen({
           style={myStyles.inputTitle}
           value={noteTitle}
           onChangeText={setNoteTitle}
-          placeholder="Please enter your title"
+          placeholder="Lütfen başlığınızı girin"
           placeholderTextColor="#9E9E9E"
           maxLength={15}
           editable={!isViewOnly}
@@ -199,7 +201,7 @@ export default function NoteDetailScreen({
           onChangeText={setNoteContent}
           multiline
           textAlignVertical="top"
-          placeholder="Please enter your note"
+          placeholder="Lütfen notunuzu girin"
           placeholderTextColor="#9E9E9E"
           selection={selection}
           onSelectionChange={({ nativeEvent: { selection } }) =>
@@ -211,7 +213,7 @@ export default function NoteDetailScreen({
 
       {!isViewOnly && (
         <TouchableOpacity style={myStyles.saveButton} onPress={handleSaveNote}>
-          <Text style={myStyles.saveButtonText}>Save</Text>
+          <Text style={myStyles.saveButtonText}>Kaydet</Text>
         </TouchableOpacity>
       )}
     </KeyboardAvoidingView>
