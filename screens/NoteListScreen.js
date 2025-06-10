@@ -84,7 +84,7 @@ export default function NoteListScreen({ navigation, notes, onDeleteNote }) {
 
       {notes.length === 0 ? (
         <View style={myStyles.emptyNotesContainer}>
-          <Text style={myStyles.emptyNotesText}>Henüz Notunuz Yok</Text>
+          <Text style={myStyles.emptyNotesText}>No notes yet.</Text>
         </View>
       ) : (
         <FlatList

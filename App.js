@@ -13,7 +13,6 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const [notes, setNotes] = useState([]);
 
-  // Notları AsyncStorage'dan yükle
   useEffect(() => {
     loadNotes();
   }, []);
@@ -26,13 +25,10 @@ export default function App() {
     try {
       const storedNotes = await AsyncStorage.getItem("myNotes");
       if (storedNotes !== null) {
-        // Notları yüklerken, geçmişteki notlarda tarih bilgisi yoksa
-        // onlara varsayılan bir tarih atayabiliriz (örneğin ilk oluşturulma tarihleri).
-        // Bu, eski notların yeni tarih alanları nedeniyle çökmesini önler.
         const parsedNotes = JSON.parse(storedNotes).map((note) => ({
           ...note,
-          createdAt: note.createdAt || new Date().toISOString(), // Eğer yoksa şimdiki zamanı ata
-          updatedAt: note.updatedAt || new Date().toISOString(), // Eğer yoksa şimdiki zamanı ata
+          createdAt: note.createdAt || new Date().toISOString(),
+          updatedAt: note.updatedAt || new Date().toISOString(),
         }));
         setNotes(parsedNotes);
       }
@@ -55,7 +51,7 @@ export default function App() {
       {
         id: Date.now().toString(),
         title:
-          (noteTitle || "").trim().length === 0 ? "Başlıksız Not" : noteTitle,
+          (noteTitle || "").trim().length === 0 ? "Untitled Note" : noteTitle,
         text: noteText,
         createdAt: createdAt,
         updatedAt: updatedAt,
@@ -75,7 +71,7 @@ export default function App() {
               ...note,
               title:
                 (newTitle || "").trim().length === 0
-                  ? "Başlıksız Not"
+                  ? "Untitled Note"
                   : newTitle,
               text: newText,
               createdAt: newCreatedAt,
@@ -101,7 +97,7 @@ export default function App() {
 
         <Stack.Screen
           name="NoteDetailScreen"
-          options={{ title: "Not Detayı" }} // Ekranın başlığı
+          options={{ title: "Note Detail" }} // Ekranın başlığı
         >
           {({ navigation, route }) => (
             <NoteDetailScreen

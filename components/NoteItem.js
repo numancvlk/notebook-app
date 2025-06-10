@@ -64,12 +64,12 @@ export default function NoteItem({
       <View style={myStyles.timestampsInCard}>
         {updatedAt && (
           <Text style={myStyles.timestampTextCard}>
-            Güncellendi: {formatShortDateTime(updatedAt)}
+            Updated at: {formatShortDateTime(updatedAt)}
           </Text>
         )}
         {createdAt && createdAt !== updatedAt && (
           <Text style={myStyles.timestampTextCard}>
-            Oluşturuldu: {formatShortDateTime(createdAt)}
+            Created at: {formatShortDateTime(createdAt)}
           </Text>
         )}
       </View>
@@ -163,13 +163,13 @@ const myStyles = StyleSheet.create({
   },
   timestampsInCard: {
     position: "absolute",
-    bottom: 55, // Butonların hemen üstüne gelecek şekilde ayarla
+    bottom: 55,
     left: 15,
     right: 15,
-    alignItems: "flex-end", // Sağ hizalı
+    alignItems: "flex-end",
   },
   timestampTextCard: {
-    fontSize: 10, // Daha küçük font
+    fontSize: 10,
     color: "#999",
     fontStyle: "italic",
   },
