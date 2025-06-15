@@ -1,46 +1,36 @@
-# REACT NATIVE - NOTEBOOK APP
-Bu projede, kullanıcıların unutmaması gereken notlarını kolay bir şekilde yerel bir şekilde depolayabileceği bir notlar uygulaması geliştirdim. Uygulama JavaScript ve React Native kullanılarak oluşturulmuştur. Uygulamanın temel özellikleri şunlardır:
+# 🚀 REACT NATIVE - NOTEBOOK UYGULAMASI 🚀
+Bu proje, kullanıcıların notlarını kolay bir şekilde yönetebilmeleri için tasarlanmış, **dinamik filtreleme** gibi gelişmiş özelliklere sahip modern bir notebook uygulamasıdır. JavaScript ve React Native kullanarak sıfırdan geliştirdim.
 
-- Not listesini görüntüleme
+* **✅ Yeni Not Ekleme:** Basit arayüzle hızlıca yeni notlar oluşturun.
+* **🗑️ Not Silme:** Tamamlanan veya gereksiz notları kolayca listeden kaldırın.
+* **✏️ Not Düzenleme:** Mevcut notları anında güncelleyin.
+* **🔎 Not Arama ve Filtreleme:** Arama çubuğunu kullanarak notlarınız arasında anında arama yapın ve ilgili notları hızla bulun.
 
-- Yeni not ekleme
+## ⚙️ Kurulum ve Çalıştırma
+Uygulamayı yerel makinenizde çalıştırmak için aşağıdaki adımları izleyin:
 
-- Var olan notu düzenleme
+1.  **Gereksinimler:**
+    * Bilgisayarınızda **Visual Studio Code**'un kurulu olması gerekmektedir.
 
-- Notu silme
+2.  **Bağımlılıkları Yükleme:**
+    VS Code terminalini (veya tercih ettiğiniz bir terminali) açın ve gerekli paketleri indirmek için aşağıdaki komutu çalıştırın:
+    ```bash
+    npm install
+    ```
 
-- Arama çubuğu ile notları filtreleme
+3.  **Uygulamayı Başlatma:**
+    Paketler yüklendikten sonra, uygulamayı başlatmak için terminalde şu komutu kullanın:
+    ```bash
+    npx expo
+    ```
+    Bu komutu çalıştırdıktan sonra ister telefonunuzda istersenizde emülatörden uygulamayı çalıştırabilirsiniz.
 
-- Markdown ile notları kalın, italik ve üstü çizili bir şekilde yazma
+Artık uygulamayı kullanmaya hazırsınız!
 
+## 📺 Uygulama Videosu
+▶️ [Watch Project Video on YouTube](https://www.youtube.com/shorts/nh4uXt1nZKk)
 
-## -- KURULUM -- 
-Bilgisayarınızda Visual Studio Code kurulumunun yapılmış olması gerekmektedir. VS CODE terminaline npm install yazarak gerekli paketleri indirebilirsiniz. Ardından VS CODE terminaline npx expo yazarak önünüze çıkan QR kodu telefonunuzdaki Expo Go uygulaması ile okutabilirsiniz veya bir emülatör yardımıyla kullanmaya başlayabilirsiniz.
-
-## -- UYGULAMA İÇİ GÖRÜNTÜLER -- 
-![1](https://github.com/user-attachments/assets/c1935a81-5fc8-4d23-a45d-5dcc70ab2ded)
-
-#### Resimde de göründüğü üzere bu kısımda kullanıcı tarafından eklenen tüm notlar görüntülenebilir.
-
-![2](https://github.com/user-attachments/assets/45b8aa17-517b-47e0-a6ed-80bad5895fb6)
-
-#### Bu kısımda kullanıcı yeni notlar ekleyebilir ve bu notlara markdown ile kalın, italik veya üstü çizili şekilde notunu alabilir.
-
-![3](https://github.com/user-attachments/assets/4379b9f2-bd9f-4a71-865a-9f0ab1f1dcdf)
-
-#### Markdown karakterlerinin kullanılışı şekildeki gibidir.
-
-![4](https://github.com/user-attachments/assets/42a09059-4afd-4cb4-8a2a-b26956cde89c)
-
-#### Kullanıcı arama çubuğunu kullanarak oluşturduğu notlar arasından filtreleme yapabilir
-
-![5](https://github.com/user-attachments/assets/82de69f5-4a99-434e-adb1-eb76091e8905)
-
-#### Kullanıcı ana ekrandan notunun üzerine basarak notunu yalnızca görüntüleme moduna geçebilir.
-
-
-### ÖNEMLİ NOT!
-Bu projeye eklenen kişiler local olarak kaydedilir uygulamayı açıp kapatmanız içerisindeki verileri silmez.
-
+⚠️ Önemli Notlar
+* Bu uygulama, verileri telefonunuzun veya emülatör **yerel depolamasında (`localStorage`)** saklar. Bu sayede, uygulamayı kapatsanız dahi notlarınız kaybolmaz ve kaldığınız yerden devam edebilirsiniz.
 ### Bu proje, sadece portföy amacıyla ve ticari bir amaç gütmeden paylaşılmaktadır.
 ### This project is shared solely for portfolio purposes and without any commercial intent.
